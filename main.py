@@ -22,7 +22,7 @@ def sample_news_data_fetcher(api_key: str = None) -> List[Dict[str, Any]]:
     从API获取新闻数据，并为每条新闻添加raw_content字段
     """
     api_url = "https://whyta.cn/api/tx/generalnews"
-    
+    print(f"正在获取API数据: {api_key}")
     try:
         response = requests.get(f"{api_url}?key={api_key}")
         response.raise_for_status()
@@ -30,7 +30,6 @@ def sample_news_data_fetcher(api_key: str = None) -> List[Dict[str, Any]]:
         
         # 获取新闻列表
         news_list = data["result"]["newslist"]
-        
         # 使用html2text为每条新闻添加raw_content
         h = html2text.HTML2Text()
         h.ignore_links = False
@@ -48,7 +47,6 @@ def sample_news_data_fetcher(api_key: str = None) -> List[Dict[str, Any]]:
                 except Exception as e:
                     print(f"获取新闻内容失败: {news['url']} {e}")
                     news["raw_content"] = ""
-        
         return news_list
     except Exception as e:
         print(f"获取API数据失败: {e}")
@@ -67,8 +65,9 @@ def main():
     try:
         # 生成新闻视频
         print("正在生成新闻视频...")
-        video_path = generator.generate_news_video(
-            news_data_fetcher=sample_news_data_fetcher(api_key=config.whyta_api_key),
+        news_data = sample_news_data_fetcher(api_key=config.whyta_api_key)
+        video_path = generator.generate_from_news_list(
+            news_items=news_data,
             output_path=f"output/news_video_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"
         )
         
