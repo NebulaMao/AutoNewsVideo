@@ -32,7 +32,9 @@ def sample_news_data_fetcher(api_key: str = None) -> List[Dict[str, Any]]:
         news_list = data["result"]["newslist"]
         # 使用html2text为每条新闻添加raw_content
         h = html2text.HTML2Text()
-        h.ignore_links = False
+        h.ignore_links = True
+        h.ignore_images = True
+        h.ignore_emphasis = True
         
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
@@ -66,8 +68,8 @@ def main():
         # 生成新闻视频
         print("正在生成新闻视频...")
         news_data = sample_news_data_fetcher(api_key=config.whyta_api_key)
-        video_path = generator.generate_from_news_list(
-            news_items=news_data,
+        video_path = generator.generate_news_video(
+            news_data_fetcher= lambda: news_data,  # 这里传递一个返回news_data的函数
             output_path=f"output/news_video_{datetime.now().strftime('%Y%m%d_%H%M%S')}.mp4"
         )
         
