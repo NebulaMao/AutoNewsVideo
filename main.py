@@ -34,7 +34,6 @@ def sample_news_data_fetcher(api_key: str = None) -> List[Dict[str, Any]]:
         h = html2text.HTML2Text()
         h.ignore_links = True
         h.ignore_images = True
-        h.ignore_emphasis = True
         
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
